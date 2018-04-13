@@ -1,0 +1,18 @@
+## GNU GPL v3 License
+
+## Copyright (c) 2017 github.com:go-trellis
+
+trellis:
+  connector:
+    tgorm:
+      driver: mysql
+      mysql:
+        - name: api_manager
+          address: localhost:33063
+          user: root
+          password: root
+          charset: utf8
+          parseTime: "True"
+          location: "Asia/Shanghai"
+          log_mode: true
+          is_default: true

@@ -1,0 +1,43 @@
+{{ define "projects/index.tmpl" }}
+{{ template "base/head.tmpl" .}}
+<div>
+	<div><button>新增项目</button></div>
+	<div>项目列表：</div>
+	<div>
+		<table>
+			<thead>
+				<tr>
+					<td>项目编号</td>
+					<td>项目名称</td>
+					<td>域名</td>
+					<td>联系人</td>
+					<td>联系电话</td>
+					<td>联系地址</td>
+					<td>违约金</td>
+					<td>定金</td>
+					<td>退款</td>
+					<td>状态</td>
+					<td>操作</td>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .Projects}}
+				<tr>
+					<td><a href="/apis?pid={{.ID}}">{{.ID}}</a></td>
+					<td>{{.Name}}</td>
+					<td>{{.Host}}</td>
+					<td>{{.ContactName}}</td>
+					<td>{{.ContactCellphone}}</td>
+					<td>{{.Address}}</td>
+					<td>{{FundI2A .Brokerage}} 元</td>
+					<td>{{FundI2A .Deposit}} 元</td>
+					<td>{{FundI2A .Refund}} 元</td>
+					<td>{{StatusName .Status}}</td>
+					<td><button>更新</button></td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+	</div>
+</div>
+{{ end }}
