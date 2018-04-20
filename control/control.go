@@ -2,14 +2,13 @@ package control
 
 import (
 	"fmt"
-	"html/template"
+	"net/http"
 	"os"
 	"os/signal"
 	"path"
 	"time"
 
-	"github.com/go-trellis/api-manager/templates"
-
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-trellis/config"
 )
@@ -42,11 +41,11 @@ func customEntry() {
 
 	gin.SetMode(app.Gin.Mode)
 
-	router := gin.Default()
+	router := gin.New()
 
-	router.SetFuncMap(templateFuncs())
+	router.Use(cors.Default())
 
-	router.LoadHTMLGlob("templates/**/*")
+	router.Static("/web", "./web")
 
 	for _, entry := range GinEntries {
 		for _, handler := range entry.Handlers {
@@ -55,6 +54,7 @@ func customEntry() {
 			}
 		}
 	}
+
 	router.Run(app.Gin.Address)
 }
 
@@ -73,17 +73,8 @@ func MainEntry() {
 	<-quit
 }
 
-func AppName() string {
-	return app.Gin.AppName
-}
-
-func AppSubURL() string {
-	return app.Gin.AppSubURL
-}
-
-func templateFuncs() template.FuncMap {
-
-	templates.TemplatesFuncMap["AppSubURL"] = AppSubURL
-	templates.TemplatesFuncMap["AppName"] = AppName
-	return templates.TemplatesFuncMap
+func preflight(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+	c.JSON(http.StatusOK, struct{}{})
 }

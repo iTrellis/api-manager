@@ -126,8 +126,6 @@ func (p *HProjects) Get(ctx *gin.Context) {
 			UpdateTime:       formats.FormatDateTime(v.UpdatedAt),
 		})
 	}
-	// resp.Data = data
-	// ctx.Render(http.StatusOK, render.JSON{})
-	ctx.HTML(http.StatusOK, "projects/index.tmpl",
-		gin.H{"AppSubURL": "", "Title": "项目列表", "Projects": data})
+	resp.Data = data
+	ctx.JSON(http.StatusOK, resp)
 }

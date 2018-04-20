@@ -1,5 +1,5 @@
 gin:
   app_name: API管理工具
   app_sub_url: 
-  address: "0.0.0.0:8000"
+  address: "0.0.0.0:8001"
   mode: debug

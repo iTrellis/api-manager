@@ -9,6 +9,7 @@ var (
 )
 
 var (
-	ErrCreateProject = errors.TN(namespaceProject, 11001, "failed create project: {{.err}}")
-	ErrUpdateProject = errors.TN(namespaceProject, 11002, "failed update project: {{.err}}")
+	ErrGetProject    = errors.TN(namespaceProject, 10001, "failed get project: {{.err}}")
+	ErrCreateProject = errors.TN(namespaceProject, 10002, "failed create project: {{.err}}")
+	ErrUpdateProject = errors.TN(namespaceProject, 10003, "failed update project: {{.err}}")
 )

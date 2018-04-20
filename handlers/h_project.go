@@ -43,6 +43,82 @@ func (p *HProject) Inject(params map[string]interface{}) {
 }
 
 /******************************
+*** Method: Get
+******************************/
+
+// QueryGetProject
+type QueryGetProject struct {
+	ID int `form:"id" validate:"required"`
+}
+
+// RespGetProjectItem
+type RespGetProjectItem struct {
+	ID               int    `json:"id"`
+	Name             string `json:"name"`
+	Address          string `json:"address"`
+	Host             string `json:"host"`
+	ContactName      string `json:"contact_name"`
+	ContactCellphone string `json:"contact_cellphone"`
+	Brokerage        int64  `json:"brokerage"`
+	Deposit          int64  `json:"deposit"`
+	Refund           int64  `json:"refund"`
+	Status           string `json:"status"`
+}
+
+type RespGetProject struct {
+	CommonResponse
+}
+
+func (p *HProject) Get(ctx *gin.Context) {
+	resp := RespGetProject{}
+
+	req := QueryGetProject{}
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		errResp := errcode.ErrParseProjectRequest.New(errors.Params{"err": err.Error()})
+		resp.Code = errResp.Code()
+		resp.Message = errResp.Error()
+		resp.Namespace = errResp.Namespace()
+		ctx.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	if err := Validator.Struct(&req); err != nil {
+		errResp := errcode.ErrParseProjectRequest.New(errors.Params{"err": err.Error()})
+		resp.Code = errResp.Code()
+		resp.Message = errResp.Error()
+		resp.Namespace = errResp.Namespace()
+		ctx.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	var project *domain.Project
+	if err := p.Committer.NonTX(func(pRepo models.RepoProject) (ie error) {
+		project, ie = pRepo.Get(map[string]interface{}{"id": req.ID})
+		return
+	}, p.RepoProject); err != nil {
+		errResp := errcode.ErrGetProject.New(errors.Params{"err": err.Error()})
+		resp.Code = errResp.Code()
+		resp.Message = errResp.Error()
+		resp.Namespace = errResp.Namespace()
+		ctx.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	resp.Data = &RespGetProjectItem{
+		ID:               project.ID,
+		Name:             project.Name,
+		Address:          project.Address,
+		Host:             project.Host,
+		ContactName:      project.ContactName,
+		ContactCellphone: project.ContactCellphone,
+		Brokerage:        project.Brokerage,
+		Deposit:          project.Deposit,
+		Refund:           project.Refund,
+		Status:           project.Status,
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
+/******************************
 *** Method: Post
 ******************************/
 
